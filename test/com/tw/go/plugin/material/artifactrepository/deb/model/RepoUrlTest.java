@@ -101,8 +101,8 @@ public class RepoUrlTest {
 
     @Test
     public void shouldNotThrowExceptionIfCheckConnectionToTheRepoPasses() {
-        new RepoUrl("http://in.archive.ubuntu.com/ubuntu/dists/saucy/main/binary-amd64/", null, null).checkConnection();
-        new RepoUrl("http://in.archive.ubuntu.com/ubuntu/dists/saucy/main/binary-amd64", null, null).checkConnection();
+        new RepoUrl("http://in.archive.ubuntu.com/ubuntu/dists/trusty/main/binary-amd64/", null, null).checkConnection();
+        new RepoUrl("http://in.archive.ubuntu.com/ubuntu/dists/trusty/main/binary-amd64", null, null).checkConnection();
     }
 
     @Test
@@ -115,6 +115,14 @@ public class RepoUrlTest {
         assertThat(new RepoUrl("file:///foo/bar", null, null).getRepoMetadataUrl(), is("file:///foo/bar/Packages.gz"));
         assertThat(new RepoUrl("file:///foo/bar/", null, null).getRepoMetadataUrl(), is("file:///foo/bar/Packages.gz"));
         assertThat(new RepoUrl("file:///foo/bar//", null, null).getRepoMetadataUrl(), is("file:///foo/bar/Packages.gz"));
+    }
+
+    @Test
+    public void shouldGetCorrectPathGetPackageLocation() throws Exception {
+        assertThat(
+            new RepoUrl("http://in.archive.ubuntu.com/ubuntu/dists/trusty/main/binary-amd64/", null, null).getPackageLocation("pool/main/e/empathy/account-plugin-aim_3.8.6-0ubuntu9_amd64.deb"), 
+            is("http://in.archive.ubuntu.com/ubuntu/pool/main/e/empathy/account-plugin-aim_3.8.6-0ubuntu9_amd64.deb")
+        );
     }
 
     private void assertRepositoryUrlValidation(String url, String username, String password, List<ValidationError> expectedErrors, boolean isSuccessful) {

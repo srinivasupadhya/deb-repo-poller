@@ -102,25 +102,15 @@ public class RepoUrl {
     }
 
     public String getPackageLocation(String filePath) {
-        String packageLocation = null;
-        if (url.endsWith("/"))
-            packageLocation = url.substring(0, url.length() - 1);
-        else
-            packageLocation = url;
-        String[] parts = filePath.split("/");
-        for (int i = 0; i < parts.length; i++) {
-            if (!packageLocation.contains(parts[i])) {
-                packageLocation = merge(packageLocation, parts, i);
-                break;
-            }
-        }
-        return packageLocation;
-    }
+        String packageLocation = url;
+        // For repo http://in.archive.ubuntu.com/ubuntu/dists/trusty/main/binary-amd64/
+        // packages will be located under http://in.archive.ubuntu.com/ubuntu/pool/...,
+        // so truncate the package_location to http://in.archive.ubuntu.com/ubuntu and 
+        // append the filename.
 
-    private String merge(String packageLocation, String[] parts, int index) {
-        for (int i = index; i < parts.length; i++) {
-            packageLocation += "/" + parts[i];
-        }
+        int truncateIndex = url.indexOf("dists");
+        packageLocation = packageLocation.substring(0, truncateIndex);
+        packageLocation += filePath;
         return packageLocation;
     }
 }
